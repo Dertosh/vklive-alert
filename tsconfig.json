@@ -3,10 +3,13 @@
     "target": "es5",
     "lib": [
       "dom",
-      "dom.iterable",
+      //"dom.iterable",
       "esnext"
     ],
-    "allowJs": true,
+    "sourceMap": true,
+    "outDir": "./build",
+    "rootDir": "./src",
+    //"allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -18,9 +21,27 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react",
+    "removeComments": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    // "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noUncheckedIndexedAccess": true,
+    // "allowUmdGlobalAccess": true,
   },
   "include": [
     "src"
+  ],
+  "exclude": [
+    "node_modules",
+    "build",
+    "public"
   ]
 }
