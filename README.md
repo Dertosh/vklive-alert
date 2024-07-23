@@ -1,3 +1,16 @@
+# VK Play Live Alert
+It is a little extensions for see alerts of getting prize in chat
+
+## Install
+
+1. Launch the Chrome browser, click the Chrome menu icon, Chrome menu icon, consisting of three vertical dots, then select More tools, and then select Extensions.
+
+2. Ensure that the Developer mode check box in the upper right corner is enabled.
+
+3. Use drag-and-drop to drag the CRX file from the temporary location you used in step 1, and drop it into the Extensions window to install.
+
+4. To verify the install, relaunch the Chrome browser and, in the address bar, enter: chrome://extensions The Oracle Smart View for Office extension is listed in the Extensions page.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

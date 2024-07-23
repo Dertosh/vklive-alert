@@ -1,13 +1,9 @@
 {
-  "short_name": "React App",
-  "name": "Chrome React Extension",
-  "description": "Template for creating Crome extensions with React",
+  "short_name": "VPL Alert",
+  "name": "VK Play Live Alert",
+  "description": "Alert of getting prize from stream chat",
   "version": "1.1",
   "manifest_version": 3,
-  "action": {
-      "default_popup": "index.html",
-      "default_title": "Open the popup"
-  },
   "background": {
     "service_worker": "background.js"
   },
