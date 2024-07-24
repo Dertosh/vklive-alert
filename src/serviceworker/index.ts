@@ -1,5 +1,20 @@
 // public/serviceWorker.ts
 
+let soundUrl = "";
+
+function getSound() {
+    if(soundUrl)
+    {
+      return;
+    }
+  
+    chrome.storage.local.get(['alertSound'], (result) => {
+      if (result.alertSound) {
+        soundUrl = result.alertSound;
+      }
+    });
+  }
+
 chrome.runtime.onInstalled.addListener(() => {
     console.log('Extension installed');
   });
@@ -10,6 +25,8 @@ chrome.runtime.onInstalled.addListener(() => {
     if (message.type === 'BOT_CHAT_MESSAGE') {
       sendResponse({ response: "Service worker received the BOT_CHAT_MESSAGE" });
   
+      //playAlertSound();
+
       if (!message.isBot) {
         return;
       }
@@ -54,14 +71,17 @@ chrome.runtime.onInstalled.addListener(() => {
       });
   
       // Play the alert sound
-      playAlertSound();
+      //playAlertSound();
     }
   });
   
   // Function to play the alert sound
   function playAlertSound(): void {
-    const audio = new Audio(chrome.runtime.getURL('alertSound.mp3'));
-    audio.play();
+    getSound();
+    if (soundUrl) {
+      const audio = new Audio(soundUrl);
+      audio.play();
+    }
   }
   
   // Adding export {} to make this file a module
