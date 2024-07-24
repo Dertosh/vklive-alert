@@ -11,6 +11,7 @@
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "customize-cra": "^1.0.0",
+    "filemanager-webpack-plugin": "^8.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-scripts": "^5.0.1",
@@ -20,10 +21,10 @@
     "webextension-polyfill": "^0.12.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "react-app-rewired start",
+    "build:extension": "REACT_APP_BUILD_TARGET=extension react-app-rewired build",
+    "build:web-app": "REACT_APP_BUILD_TARGET=web-app react-app-rewired build",
+    "test": "react-app-rewired test"
   },
   "eslintConfig": {
     "extends": [
@@ -44,6 +45,8 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@babel/plugin-transform-private-property-in-object": "^7.24.7",
     "@types/chrome": "^0.0.268",
     "@types/webextension-polyfill": "^0.10.7",
     "react-app-rewired": "^2.2.1"

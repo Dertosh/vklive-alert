@@ -3,12 +3,12 @@
     "target": "es5",
     "lib": [
       "dom",
-      //"dom.iterable",
+      "dom.iterable",
       "esnext"
     ],
     "sourceMap": true,
     "outDir": "./build",
-    "rootDir": "./src",
+    //"rootDir": "./src",
     //"allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
