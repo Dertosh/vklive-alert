@@ -9,6 +9,7 @@ const Options: React.FC = () => {
   useEffect(() => {
     // Load sound file from Chrome storage
     chrome.storage.local.get(['alertSound'], (result) => {
+      console.log("result.alertSound", result.alertSound, result);
       if (result.alertSound) {
         setSoundUrl(result.alertSound);
       }
@@ -19,7 +20,7 @@ const Options: React.FC = () => {
       console.log('Message received in popup:', message);
       setMessages(prevMessages => [...prevMessages, message.type]);
       if (soundUrl) {
-        playSound();
+        //playSound();
       }
       alert(`New message received: ${message.type}`);
       sendResponse({ response: 'Popup received the message' });
@@ -31,7 +32,7 @@ const Options: React.FC = () => {
     return () => {
       chrome.runtime.onMessage.removeListener(messageListener);
     };
-  }, [soundUrl, playSound]);
+  }, [soundUrl]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -43,7 +44,9 @@ const Options: React.FC = () => {
           const base64Sound = result.toString();
           chrome.storage.local.set({ alertSound: base64Sound }, () => {
             setSoundUrl(base64Sound);
-            console.log("sound uploaded");
+            console.log("sound uploaded", soundUrl);
+            //useSound(soundUrl as string);
+            playSound();
           });
         }
       };

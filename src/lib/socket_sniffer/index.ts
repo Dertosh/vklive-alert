@@ -19,7 +19,41 @@ function getExcursionId(): string {
   return editorExtensionId;
 }
 
+async function parseMessage(data: any){
+  let obj: any;
+  try {
+    obj = JSON.parse(data);
+  } catch (e) {
+    //console.error("Failed to parse WebSocket message:", e);
+    return;
+  }
+
+  if (obj && obj['push'] && obj['push']['pub']) {
+    const data = obj['push']['pub']['data'];
+
+    if (data['type'] === "message") {
+      console.log("parseMessage:", data);
+
+      const messageData = data['data'];
+      const botStatus = messageData['author']['vkplayProfileLink'] === '' && messageData['author']['nick'] === "ChatBot";
+
+      // Send the message to the background script
+      sendMessageToBackground({
+        type: 'BOT_CHAT_MESSAGE',
+        messageData: messageData,
+        iconURL: messageData['author']['avatarUrl'],
+        isBot: botStatus
+      });
+    }
+  }
+}
+
 (function () {
+
+  sendMessageToBackground({
+    type: 'PAGE_LOAD'
+  });
+
   console.log("connecting to websocket");
   const OrigWebSocket = window.WebSocket as typeof WebSocket;
 
@@ -42,30 +76,7 @@ function getExcursionId(): string {
         return;
       }
 
-      let obj: any;
-      try {
-        obj = JSON.parse(event.data);
-      } catch (e) {
-        //console.error("Failed to parse WebSocket message:", e);
-        return;
-      }
-
-      if (obj && obj['push'] && obj['push']['pub']) {
-        const data = obj['push']['pub']['data'];
-
-        if (data['type'] === "message") {
-          const messageData = data['data'];
-          const botStatus = messageData['author']['vkplayProfileLink'] === '' && messageData['author']['nick'] === "ChatBot";
-
-          // Send the message to the background script
-          sendMessageToBackground({
-            type: 'BOT_CHAT_MESSAGE',
-            messageData: messageData,
-            iconURL: messageData['author']['avatarUrl'],
-            isBot: botStatus
-          });
-        }
-      }
+      parseMessage(event.data);
     });
 
     return ws;
@@ -79,7 +90,7 @@ function getExcursionId(): string {
     // Convert `arguments` to the appropriate type
     const args = Array.prototype.slice.call(arguments) as [string | ArrayBufferLike | Blob | ArrayBufferView];
     
-    console.log("Sent:", arguments[0]);
+    //console.log("Sent:", arguments[0]);
     return wsSend.apply(this, args);
   };
 })();

@@ -1,5 +1,4 @@
 console.log("Injecting");
-console.log("chrome.runtime.id inject", chrome.runtime.id);
 
 const div = document.createElement("div");
 div.setAttribute('id', "vkliveExtension");
@@ -13,7 +12,5 @@ s.onload = function() {
     (this as HTMLScriptElement).remove();
 };
 (document.head || document.documentElement).append(s);
-
-console.log("End start Injected");
 
 export {}

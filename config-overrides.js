@@ -66,7 +66,8 @@ module.exports = {
 
       config.entry = {
         main: "./src/popup",
-        background: "./src/serviceworker/index.ts",
+        background: "./src/serviceworker/background/index.ts",
+        audioworker: "./src/serviceworker/audioworker/index.ts",
         content: './src/content/index.ts',
         options: './src/options',
         socket_sniffer: './src/lib/socket_sniffer/index.ts',
