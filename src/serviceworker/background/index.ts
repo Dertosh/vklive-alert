@@ -95,12 +95,10 @@ chrome.runtime.onInstalled.addListener(() => {
   
     if (message.type === 'BOT_CHAT_MESSAGE') {
       sendResponse({ response: "Service worker received the BOT_CHAT_MESSAGE" });
-  
-      //playAlertSound();
 
-      //if (!message.isBot) {
-      //  return;
-      //}
+      if (!message.isBot) {
+       return;
+      }
   
       let textOut: string = "";
       let title: string = message.messageData['author']['displayName'];
@@ -129,13 +127,13 @@ chrome.runtime.onInstalled.addListener(() => {
             isPrize = true;
           }
 
-          textOut += isPrize ? localdata[0].slice(stringGetPrize.length) + 2 : localdata[0];
+          textOut += isIncludePrize ? localdata[0].slice(stringGetPrize.length + 2) : localdata[0];
         }
       });
   
-      //if (!isPrize) {
-      //  return;
-      //}
+      if (!isPrize) {
+       return;
+      }
   
       // Show an alert notification
       chrome.notifications.create({
@@ -146,8 +144,6 @@ chrome.runtime.onInstalled.addListener(() => {
       });
   
       // Play the alert sound
-
-      console.log('UserSettings.disableSound', UserSettings.disableSound)
 
       if(!UserSettings.disableSound)
       {
