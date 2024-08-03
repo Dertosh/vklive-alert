@@ -61,7 +61,7 @@ const Options = () => {
   return (
     <div className="container">
       {/* New section for the input fields */}
-      <div className="new-sound-section">
+      {fileUrl && false && (<div className="new-sound-section">
         <input
           type="text"
           value={sectionName}
@@ -73,10 +73,10 @@ const Options = () => {
           accept="audio/*"
           onChange={handleFileUpload}
         />
-      </div>
+      </div>      )}
 
       {/* Display uploaded file URL for testing purposes */}
-      {fileUrl && (
+      {fileUrl && false && (
         <div>
           <p>Uploaded File URL: {fileUrl}</p>
           <audio controls src={fileUrl}></audio>
