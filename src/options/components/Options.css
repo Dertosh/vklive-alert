@@ -1,0 +1,51 @@
+/* Options.css */
+
+.container {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background-color: white;
+}
+
+.new-sound-section,
+.settings-section {
+    margin-bottom: 20px;
+}
+
+.new-sound-section input[type="text"],
+.settings-section input[type="text"] {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.new-sound-section input[type="file"] {
+    display: block;
+    margin-bottom: 10px;
+}
+
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.settings-section label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.settings-section label input[type="checkbox"] {
+    margin-right: 10px;
+}

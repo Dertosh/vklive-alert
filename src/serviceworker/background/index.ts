@@ -1,8 +1,10 @@
 // public/serviceWorker.ts
 
 let soundUrl = "";
-const stringGetPrize = 'получает награду: ';
+const stringGetPrize = 'получает награду';
 let currentChannel = "";
+
+let UserSettings = {disableSound: false, volume: 0.5};
 
 const audioPath = "audioworker/index.html";
 let creating: Promise<void> | null; // A global promise to avoid concurrency issues
@@ -12,6 +14,14 @@ async function sendMessageFromBackground(message: object) {
   console.log('sendMessageFromBackground');
   chrome.runtime.sendMessage(message, (response) => {
     return;
+  });
+}
+
+async function UpdateUserSettings()
+{
+  chrome.storage.local.get(['disableSound', 'volume'], (result) => {
+    UserSettings.disableSound = result.disableSound || false;
+    UserSettings.volume = result.volume || 0.5;
   });
 }
 
@@ -45,8 +55,16 @@ async function createAudioWorker() {
     } else {
       creating = chrome.offscreen.createDocument({
       url: offscreenUrl,
-      reasons: [chrome.offscreen.Reason.WORKERS],
+      reasons: [chrome.offscreen.Reason.AUDIO_PLAYBACK],
       justification: 'notification',
+      });
+
+      creating.finally(()=>{
+        console.log("created offscreen")
+        sendMessageFromBackground({
+          type: 'USERSETTINGS_UPDATE', 
+          volume: UserSettings.volume, 
+          disableSound: UserSettings.disableSound});
       });
 
       await creating;
@@ -57,10 +75,17 @@ async function createAudioWorker() {
 
 chrome.runtime.onInstalled.addListener(() => {
     console.log('Extension installed');
+    UpdateUserSettings();
   });
   
   chrome.runtime.onMessageExternal.addListener((message, _sender, sendResponse) => {
-    console.log('Message received in service worker:', message);
+    console.log('onMessageExternal received in service worker:', message);
+
+    if (message.type === 'USERSETTINGS_UPDATE') {
+      sendResponse({ response: "Service worker received the USERSETTINGS_UPDATE"});
+      UpdateUserSettings();
+      return;
+    }
 
     if (message.type === 'PAGE_LOAD') {
       sendResponse({ response: "Service worker received the PAGE_LOAD" });
@@ -77,7 +102,7 @@ chrome.runtime.onInstalled.addListener(() => {
       //  return;
       //}
   
-      let textOut: string = "empty";
+      let textOut: string = "";
       let title: string = message.messageData['author']['displayName'];
       let isPrize: boolean = false;
   
@@ -104,7 +129,7 @@ chrome.runtime.onInstalled.addListener(() => {
             isPrize = true;
           }
 
-          textOut += isPrize ? localdata[0].slice(stringGetPrize.length) : localdata[0];
+          textOut += isPrize ? localdata[0].slice(stringGetPrize.length) + 2 : localdata[0];
         }
       });
   
@@ -121,8 +146,29 @@ chrome.runtime.onInstalled.addListener(() => {
       });
   
       // Play the alert sound
-      playAlertSound();
+
+      console.log('UserSettings.disableSound', UserSettings.disableSound)
+
+      if(!UserSettings.disableSound)
+      {
+        playAlertSound();
+      }
     }
+
+    sendResponse({ response: "Service worker received Nothing" });
+  });
+
+  chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+
+    console.log('onMessage received in service worker:', message);
+
+    if (message.type === 'USERSETTINGS_UPDATE') {
+      sendResponse({ response: "Service worker received the USERSETTINGS_UPDATE"});
+      UpdateUserSettings();
+      return;
+    }
+
+    sendResponse({ response: "Service worker received Nothing" });
   });
   
   // Function to play the alert sound

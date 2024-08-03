@@ -4,7 +4,7 @@ let editorExtensionId = "";
 // Function to send a message to the background script
 function sendMessageToBackground(message: object): void {
   chrome.runtime.sendMessage(getExcursionId(), message, (response) => {
-    console.log('Response from sniffer:', response);
+    //console.log('Response from sniffer:', response);
   });
 }
 
@@ -13,7 +13,6 @@ function getExcursionId(): string {
     const element = document.getElementById("vkliveExtension");
     if (element) {
       editorExtensionId = element.getAttribute("id_of_extension") || '';
-      console.log("id_of_extension", editorExtensionId);
     }
   }
   return editorExtensionId;
@@ -32,7 +31,7 @@ async function parseMessage(data: any){
     const data = obj['push']['pub']['data'];
 
     if (data['type'] === "message") {
-      console.log("parseMessage:", data);
+      //console.log("parseMessage:", data);
 
       const messageData = data['data'];
       const botStatus = messageData['author']['vkplayProfileLink'] === '' && messageData['author']['nick'] === "ChatBot";

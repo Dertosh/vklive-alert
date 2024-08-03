@@ -1,75 +1,111 @@
-import React, { useEffect, useState } from 'react';
-import useSound from 'use-sound';
+import React, { useState, useEffect } from 'react';
+import './Options.css';
 
-const Options: React.FC = () => {
-  const [messages, setMessages] = useState<string[]>([]);
-  const [soundUrl, setSoundUrl] = useState<string | null>(null);
-  const [playSound] = useSound(soundUrl || '', { volume: 0.5 });
+const Options = () => {
+  // States to hold the section name, uploaded file URL, sound setting, and volume
+  const [sectionName, setSectionName] = useState('');
+  const [fileUrl, setFileUrl] = useState('');
+  const [disableSound, setDisableSound] = useState(false);
+  const [volume, setVolume] = useState(50); // default volume set to 50%
 
+  // Load settings from chrome.storage.local on component mount
   useEffect(() => {
-    // Load sound file from Chrome storage
-    chrome.storage.local.get(['alertSound'], (result) => {
-      console.log("result.alertSound", result.alertSound, result);
-      if (result.alertSound) {
-        setSoundUrl(result.alertSound);
-      }
+    chrome.storage.local.get(['disableSound', 'volume', 'sectionName', 'soundUrl'], (result) => {
+      setDisableSound(result.disableSound || false);
+      setVolume(result.volume * 100 || 50);
+      setSectionName(result.sectionName || '');
+      setFileUrl(result.soundUrl || '');
     });
+  }, []);
 
-    // Listener for messages from the background script
-    const messageListener = (message: any, sender: chrome.runtime.MessageSender, sendResponse: (response: any) => void) => {
-      console.log('Message received in popup:', message);
-      setMessages(prevMessages => [...prevMessages, message.type]);
-      if (soundUrl) {
-        //playSound();
-      }
-      alert(`New message received: ${message.type}`);
-      sendResponse({ response: 'Popup received the message' });
-    };
+  // Function to handle the save settings event
+  const handleSaveSettings = () => {
+    if (/*fileUrl && sectionName.trim()*/ true) {
+      // Save the file URL, section name, disable sound setting, and volume to chrome.storage.local
+      chrome.storage.local.set({
+        soundUrl: fileUrl,
+        sectionName: sectionName,
+        disableSound: disableSound,
+        volume: volume / 100
+      }, () => {
+        console.log('Settings saved to chrome.storage.local');
+        alert('Settings have been saved.');
+        // Send a message to the background script about the settings update
+        let message = { type: 'USERSETTINGS_UPDATE', volume: volume / 100, disableSound: disableSound};
 
-    chrome.runtime.onMessage.addListener(messageListener);
+        chrome.runtime.sendMessage(message);
+      });
 
-    // Cleanup the listener when the component is unmounted
-    return () => {
-      chrome.runtime.onMessage.removeListener(messageListener);
-    };
-  }, [soundUrl]);
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const result = e.target?.result;
-        if (result) {
-          const base64Sound = result.toString();
-          chrome.storage.local.set({ alertSound: base64Sound }, () => {
-            setSoundUrl(base64Sound);
-            console.log("sound uploaded", soundUrl);
-            //useSound(soundUrl as string);
-            playSound();
-          });
-        }
-      };
-      reader.readAsDataURL(file);
+      // Reset the input fields if needed
+      // setFileUrl('');
+      // setSectionName('');
+    } else {
+      alert('Please upload a sound file and enter a section name.');
     }
   };
 
-  const handleClick = () => {
-    chrome.runtime.sendMessage({ message: "Hello from Popup" }, response => {
-      console.log(response);
-    });
+  // Function to handle file upload
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const fileReader = new FileReader();
+      fileReader.onload = () => {
+        if (fileReader.result) {
+          setFileUrl(fileReader.result as string);
+        }
+      };
+      fileReader.readAsDataURL(file);
+    }
   };
 
   return (
-    <div>
-      <h1>Hello, Chrome Extension!</h1>
-      <button onClick={handleClick}>Send Message</button>
-      <input type="file" accept="audio/*" onChange={handleFileChange} />
-      <ul>
-        {messages.map((msg, index) => (
-          <li key={index}>{msg}</li>
-        ))}
-      </ul>
+    <div className="container">
+      {/* New section for the input fields */}
+      <div className="new-sound-section">
+        <input
+          type="text"
+          value={sectionName}
+          onChange={(e) => setSectionName(e.target.value)}
+          placeholder="Enter section name"
+        />
+        <input
+          type="file"
+          accept="audio/*"
+          onChange={handleFileUpload}
+        />
+      </div>
+
+      {/* Display uploaded file URL for testing purposes */}
+      {fileUrl && (
+        <div>
+          <p>Uploaded File URL: {fileUrl}</p>
+          <audio controls src={fileUrl}></audio>
+        </div>
+      )}
+
+      {/* New section for the settings */}
+      <div className="settings-section">
+        <label>
+          <input
+            type="checkbox"
+            checked={disableSound}
+            onChange={(e) => setDisableSound(e.target.checked)}
+          />
+          Disable Sound
+        </label>
+        <label>
+          Volume:
+          <input
+            type="range"
+            min="0"
+            max="100"
+            value={volume}
+            onChange={(e) => setVolume(Number(e.target.value))}
+          />
+          {volume}%
+        </label>
+        <button onClick={handleSaveSettings}>Save Settings</button>
+      </div>
     </div>
   );
 };
