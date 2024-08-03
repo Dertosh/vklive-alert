@@ -127,7 +127,7 @@ chrome.runtime.onInstalled.addListener(() => {
             isPrize = true;
           }
 
-          textOut += isPrize ? localdata[0].slice(stringGetPrize.length + 2) : localdata[0];
+          textOut += isIncludePrize ? localdata[0].slice(stringGetPrize.length + 2) : localdata[0];
         }
       });
   

@@ -2,7 +2,7 @@
   "short_name": "VPL Alert",
   "name": "VK Play Live Alert",
   "description": "Alert of getting prize from stream chat",
-  "version": "1.1",
+  "version": "1.2",
   "manifest_version": 3,
   "background": {
     "service_worker": "background/background.js",
