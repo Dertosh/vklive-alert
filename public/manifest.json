@@ -5,39 +5,42 @@
   "version": "1.1",
   "manifest_version": 3,
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background/background.js",
+    "persistent": true
   },
   "icons": {
-    "16": "logo192.png",
-    "48": "logo192.png",
-    "128": "logo192.png"
+    "16": "logo16.png",
+    "48": "logo48.png",
+    "128": "logo128.png"
   },
+  "options_page": "options/index.html",
   "permissions": [
     "webRequest", 
     "storage",     
     "activeTab",
     "scripting",
-    "notifications"
+    "notifications",
+    "offscreen"
   ],
   "host_permissions": [
-    "*://*.vkplay.ru/*"
+    "https://live.vkplay.ru/*"
   ],
   "content_scripts": [
     {
       "matches": [
         "https://live.vkplay.ru/*"    
       ],  
-      "js": ["content/syringe.js"],
+      "js": ["content/content.js"],
       "run_at": "document_start",
       "all_frames": true
     }
   ],
   "web_accessible_resources": [{ 
-    "resources": ["lib/socket-sniffer.js"],
+    "resources": ["socket_sniffer/socket_sniffer.js", "audioworker/*", "background/*"],
     "matches": ["https://live.vkplay.ru/*"]
   }],
   "externally_connectable": {
-    "ids": ["koplghglooeejhllodlbfebmoonipnhj"],
+    "ids": ["*"],
     "matches": ["https://live.vkplay.ru/*"],
     "accepts_tls_channel_id": false
   }
