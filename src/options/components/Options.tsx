@@ -8,6 +8,13 @@ const Options = () => {
   const [disableSound, setDisableSound] = useState(false);
   const [volume, setVolume] = useState(50); // default volume set to 50%
 
+  // New states for the test message inputs
+  const [channel, setChannel] = useState('');
+  const [user, setUser] = useState('');
+  const [prizeName, setPrizeName] = useState('');
+  const [cost, setCost] = useState('');
+  const [context, setContext] = useState('');
+
   // Load settings from chrome.storage.local on component mount
   useEffect(() => {
     chrome.storage.local.get(['disableSound', 'volume', 'sectionName', 'soundUrl'], (result) => {
@@ -20,7 +27,7 @@ const Options = () => {
 
   // Function to handle the save settings event
   const handleSaveSettings = () => {
-    if (/*fileUrl && sectionName.trim()*/ true) {
+    if (true) {
       // Save the file URL, section name, disable sound setting, and volume to chrome.storage.local
       chrome.storage.local.set({
         soundUrl: fileUrl,
@@ -31,7 +38,7 @@ const Options = () => {
         console.log('Settings saved to chrome.storage.local');
         alert('Settings have been saved.');
         // Send a message to the background script about the settings update
-        let message = { type: 'USERSETTINGS_UPDATE', volume: volume / 100, disableSound: disableSound};
+        let message = { type: 'USERSETTINGS_UPDATE', volume: volume / 100, disableSound: disableSound };
 
         chrome.runtime.sendMessage(message);
       });
@@ -58,53 +65,96 @@ const Options = () => {
     }
   };
 
+  // Function to handle sending the test message
+  const sendTestMessage = () => {
+    console.log('Sending test message with the following details:');
+    console.log('Channel:', channel);
+    console.log('User:', user);
+    console.log('Prize Name:', prizeName);
+    console.log('Cost:', cost);
+    console.log('Context:', context);
+    // Implement your message sending logic here
+  };
+
   return (
     <div className="container">
-      {/* New section for the input fields */}
-      {fileUrl && false && (<div className="new-sound-section">
-        <input
-          type="text"
-          value={sectionName}
-          onChange={(e) => setSectionName(e.target.value)}
-          placeholder="Enter section name"
-        />
-        <input
-          type="file"
-          accept="audio/*"
-          onChange={handleFileUpload}
-        />
-      </div>      )}
-
-      {/* Display uploaded file URL for testing purposes */}
-      {fileUrl && false && (
-        <div>
-          <p>Uploaded File URL: {fileUrl}</p>
-          <audio controls src={fileUrl}></audio>
-        </div>
-      )}
-
-      {/* New section for the settings */}
+      {/* Existing sections */}
       <div className="settings-section">
-        <label>
+        <h2>Sound Settings</h2>
+        <div className="form-group">
+          <label htmlFor="disableSound">Disable Sound:</label>
           <input
             type="checkbox"
+            id="disableSound"
             checked={disableSound}
             onChange={(e) => setDisableSound(e.target.checked)}
           />
-          Disable Sound
-        </label>
-        <label>
-          Volume:
+        </div>
+        <div className="form-group">
+          <label htmlFor="volume">Volume:</label>
           <input
             type="range"
+            id="volume"
             min="0"
             max="100"
             value={volume}
             onChange={(e) => setVolume(Number(e.target.value))}
+            disabled={disableSound}
           />
-          {volume}%
-        </label>
+          <span>{volume}%</span>
+        </div>
         <button onClick={handleSaveSettings}>Save Settings</button>
+      </div>
+
+      {/* New section for sending test message */}
+      <div className="test-message-section">
+        <h2>Send Test Message</h2>
+        <div className="form-group">
+          <label htmlFor="channel">Channel:</label>
+          <input
+            type="text"
+            id="channel"
+            value={channel}
+            onChange={(e) => setChannel(e.target.value)}
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="user">User:</label>
+          <input
+            type="text"
+            id="user"
+            value={user}
+            onChange={(e) => setUser(e.target.value)}
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="prizeName">Prize Name:</label>
+          <input
+            type="text"
+            id="prizeName"
+            value={prizeName}
+            onChange={(e) => setPrizeName(e.target.value)}
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="cost">Cost:</label>
+          <input
+            type="text"
+            id="cost"
+            value={cost}
+            onChange={(e) => setCost(e.target.value)}
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="context">Context:</label>
+          <input
+            type="text"
+            id="context"
+            value={context}
+            onChange={(e) => setContext(e.target.value)}
+          />
+        </div>
+        <button onClick={sendTestMessage}>Send Test Message</button>
       </div>
     </div>
   );
