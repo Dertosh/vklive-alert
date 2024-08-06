@@ -14,8 +14,34 @@ body, html {
     max-width: 800px;
     margin: 40px auto;
     box-sizing: border-box;
-    overflow-y: auto; /* Added to enable scrolling */
-    max-height: 90vh; /* Set max height to enable scrolling if content overflows */
+    overflow-y: auto;
+    max-height: 90vh;
+}
+
+.tabs {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+}
+
+.tabs button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 4px 4px 0 0;
+    transition: background-color 0.3s ease;
+    font-size: 16px;
+    margin-right: 5px;
+}
+
+.tabs button.active {
+    background-color: #0056b3;
+}
+
+.tabs button:hover {
+    background-color: #0056b3;
 }
 
 .settings-section,
@@ -62,7 +88,7 @@ button {
     border-radius: 4px;
     transition: background-color 0.3s ease;
     font-size: 16px;
-    display: inline-block; /* Changed from block to inline-block */
+    display: inline-block;
     margin-top: 10px;
 }
 
