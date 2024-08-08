@@ -6,6 +6,22 @@ import './Options.css';
 const Options = () => {
   const [activeTab, setActiveTab] = useState('settings');
 
+  // State to store input values
+  const [settings, setSettings] = useState({
+    sectionName: '',
+    fileUrl: '',
+    disableSound: false,
+    volume: 50
+  });
+
+  const [testMessage, setTestMessage] = useState({
+    channel: '',
+    user: '',
+    prizeName: '',
+    cost: '',
+    context: ''
+  });
+
   const handleTabClick = (tab: string) => {
     setActiveTab(tab);
   };
@@ -20,8 +36,18 @@ const Options = () => {
           Send Test Message
         </button>
       </div>
-      {activeTab === 'settings' && <SettingsSection />}
-      {activeTab === 'testMessage' && <TestMessageSection />}
+      {activeTab === 'settings' && (
+        <SettingsSection
+          settings={settings}
+          setSettings={setSettings}
+        />
+      )}
+      {activeTab === 'testMessage' && (
+        <TestMessageSection
+          testMessage={testMessage}
+          setTestMessage={setTestMessage}
+        />
+      )}
     </div>
   );
 };

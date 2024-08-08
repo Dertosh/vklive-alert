@@ -87,7 +87,7 @@ const botMessageTemplate = {
       {
           "type": "text",
           "modificator": "",
-          "content": "[\"получает награду: Продвинуть аниме (1 раз) за 400\",\"unstyled\",[]]"
+          "content": ""
       },
       {
           "type": "text",
@@ -112,12 +112,26 @@ const botMessageTemplate = {
   ]
 }
 
-const TestMessageSection = () => {
-  const [channel, setChannel] = useState('');
-  const [user, setUser] = useState('');
-  const [prizeName, setPrizeName] = useState('');
-  const [cost, setCost] = useState('');
-  const [context, setContext] = useState('');
+
+interface TestMessageProps {
+  testMessage: {
+    channel: string;
+    user: string;
+    prizeName: string;
+    cost: string;
+    context: string;
+  };
+  setTestMessage: React.Dispatch<React.SetStateAction<{
+    channel: string;
+    user: string;
+    prizeName: string;
+    cost: string;
+    context: string;
+  }>>;
+}
+
+const TestMessageSection: React.FC<TestMessageProps> = ({ testMessage, setTestMessage }) => {
+  const { channel, user, prizeName, cost, context } = testMessage;
 
   const sendTestMessage = () => {
     // Send the message to the background script
@@ -156,7 +170,7 @@ const TestMessageSection = () => {
           type="text"
           id="channel"
           value={channel}
-          onChange={(e) => setChannel(e.target.value)}
+          onChange={(e) => setTestMessage({ ...testMessage, channel: e.target.value })}
         />
       </div>
       <div className="form-group">
@@ -165,7 +179,7 @@ const TestMessageSection = () => {
           type="text"
           id="user"
           value={user}
-          onChange={(e) => setUser(e.target.value)}
+          onChange={(e) => setTestMessage({ ...testMessage, user: e.target.value })}
         />
       </div>
       <div className="form-group">
@@ -174,16 +188,16 @@ const TestMessageSection = () => {
           type="text"
           id="prizeName"
           value={prizeName}
-          onChange={(e) => setPrizeName(e.target.value)}
+          onChange={(e) => setTestMessage({ ...testMessage, prizeName: e.target.value })}
         />
       </div>
       <div className="form-group">
         <label htmlFor="cost">Cost:</label>
         <input
-          type="text"
+          type="number"
           id="cost"
           value={cost}
-          onChange={(e) => setCost(e.target.value)}
+          onChange={(e) => setTestMessage({ ...testMessage, cost: e.target.value })}
         />
       </div>
       <div className="form-group">
@@ -192,7 +206,7 @@ const TestMessageSection = () => {
           type="text"
           id="context"
           value={context}
-          onChange={(e) => setContext(e.target.value)}
+          onChange={(e) => setTestMessage({ ...testMessage, context: e.target.value })}
         />
       </div>
       <button onClick={sendTestMessage}>Send Test Message</button>

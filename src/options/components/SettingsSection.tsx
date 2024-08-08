@@ -1,37 +1,47 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import './Options.css';
 
-const SettingsSection = () => {
-  const [sectionName, setSectionName] = useState('');
-  const [fileUrl, setFileUrl] = useState('');
-  const [disableSound, setDisableSound] = useState(false);
-  const [volume, setVolume] = useState(50);
+interface SettingsProps {
+  settings: {
+    sectionName: string;
+    fileUrl: string;
+    disableSound: boolean;
+    volume: number;
+  };
+  setSettings: React.Dispatch<React.SetStateAction<{
+    sectionName: string;
+    fileUrl: string;
+    disableSound: boolean;
+    volume: number;
+  }>>;
+}
 
+const SettingsSection: React.FC<SettingsProps> = ({ settings, setSettings }) => {
+  const { sectionName, fileUrl, disableSound, volume } = settings;
+
+  // Load settings from chrome.storage.local when the component mounts
   useEffect(() => {
-    chrome.storage.local.get(['disableSound', 'volume', 'sectionName', 'soundUrl'], (result) => {
-      setDisableSound(result.disableSound || false);
-      setVolume(result.volume * 100 || 50);
-      setSectionName(result.sectionName || '');
-      setFileUrl(result.soundUrl || '');
+    chrome.storage.local.get(['sectionName', 'soundUrl', 'disableSound', 'volume'], (result) => {
+      setSettings({
+        sectionName: result.sectionName || '',
+        fileUrl: result.soundUrl || '',
+        disableSound: result.disableSound || false,
+        volume: result.volume ? result.volume * 100 : 50 // Stored volume is a decimal, so we scale it
+      });
     });
-  }, []);
+  }, [setSettings]);
 
   const handleSaveSettings = () => {
-    if (true) {
-      chrome.storage.local.set({
-        soundUrl: fileUrl,
-        sectionName: sectionName,
-        disableSound: disableSound,
-        volume: volume / 100
-      }, () => {
-        console.log('Settings saved to chrome.storage.local');
-        alert('Settings have been saved.');
-        let message = { type: 'USERSETTINGS_UPDATE', volume: volume / 100, disableSound: disableSound };
-        chrome.runtime.sendMessage(message);
-      });
-    } else {
-      alert('Please upload a sound file and enter a section name.');
-    }
+    chrome.storage.local.set({
+      soundUrl: fileUrl,
+      sectionName: sectionName,
+      disableSound: disableSound,
+      volume: volume / 100
+    }, () => {
+      alert('Settings have been saved.');
+      let message = { type: 'USERSETTINGS_UPDATE', volume: volume / 100, disableSound: disableSound };
+      chrome.runtime.sendMessage(message);
+    });
   };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,7 +50,7 @@ const SettingsSection = () => {
       const fileReader = new FileReader();
       fileReader.onload = () => {
         if (fileReader.result) {
-          setFileUrl(fileReader.result as string);
+          setSettings({ ...settings, fileUrl: fileReader.result as string });
         }
       };
       fileReader.readAsDataURL(file);
@@ -56,7 +66,7 @@ const SettingsSection = () => {
           type="checkbox"
           id="disableSound"
           checked={disableSound}
-          onChange={(e) => setDisableSound(e.target.checked)}
+          onChange={(e) => setSettings({ ...settings, disableSound: e.target.checked })}
         />
       </div>
       <div className="form-group">
@@ -67,7 +77,7 @@ const SettingsSection = () => {
           min="0"
           max="100"
           value={volume}
-          onChange={(e) => setVolume(Number(e.target.value))}
+          onChange={(e) => setSettings({ ...settings, volume: Number(e.target.value) })}
           disabled={disableSound}
         />
         <span>{volume}%</span>

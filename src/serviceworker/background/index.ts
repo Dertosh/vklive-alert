@@ -5,6 +5,7 @@ const stringGetPrize = 'получает награду';
 let currentChannel = "";
 
 let UserSettings = {disableSound: false, volume: 0.5};
+UpdateUserSettings();
 
 const audioPath = "audioworker/index.html";
 let creating: Promise<void> | null; // A global promise to avoid concurrency issues
