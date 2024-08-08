@@ -37,6 +37,63 @@ function getSound() {
       }
     });
   }
+
+async function parseBotMessage(message : any) {
+  if (!message.isBot) {
+    return;
+   }
+
+   let textOut: string = "";
+   let title: string = message.messageData['author']['displayName'];
+   let isPrize: boolean = false;
+
+   message.messageData['data'].forEach((element: any) => {
+     if (element.type === 'mention') {
+       title = element.displayName + ' ' + stringGetPrize;
+       return;
+     }
+     if (element.type === 'text') {
+       if (element.content === '') {
+         return;
+       }
+       const localdata: string[] | null = JSON.parse(element.content);
+
+       if(!localdata || localdata.length === 0)
+       {
+         return;
+       }
+
+       textOut += textOut.length !== 0 ? " " : "";
+
+       let isIncludePrize = localdata[0] ? localdata[0].includes(stringGetPrize): false;
+       if (!isPrize && isIncludePrize) {
+         isPrize = true;
+       }
+
+       textOut += isIncludePrize ? localdata[0].slice(stringGetPrize.length + 2) : localdata[0];
+     }
+   });
+
+   if (!isPrize) {
+    return;
+   }
+
+   // Show an alert notification
+   chrome.notifications.create({
+     type: 'basic',
+     iconUrl: chrome.runtime.getURL('logo128.png'),
+     title: title,
+     message: textOut
+   });
+
+   // Play the alert sound
+
+   if(!UserSettings.disableSound)
+   {
+     playAlertSound();
+   }
+}
+
 async function createAudioWorker() {
     // Check all windows controlled by the service worker to see if one
   // of them is the offscreen document with the given path
@@ -95,60 +152,7 @@ chrome.runtime.onInstalled.addListener(() => {
   
     if (message.type === 'BOT_CHAT_MESSAGE') {
       sendResponse({ response: "Service worker received the BOT_CHAT_MESSAGE" });
-
-      if (!message.isBot) {
-       return;
-      }
-  
-      let textOut: string = "";
-      let title: string = message.messageData['author']['displayName'];
-      let isPrize: boolean = false;
-  
-      message.messageData['data'].forEach((element: any) => {
-        if (element.type === 'mention') {
-          title = element.displayName + ' ' + stringGetPrize;
-          return;
-        }
-        if (element.type === 'text') {
-          if (element.content === '') {
-            return;
-          }
-          const localdata: string[] | null = JSON.parse(element.content);
-
-          if(!localdata || localdata.length === 0)
-          {
-            return;
-          }
-
-          textOut += textOut.length !== 0 ? " " : "";
-
-          let isIncludePrize = localdata[0] ? localdata[0].includes(stringGetPrize): false;
-          if (!isPrize && isIncludePrize) {
-            isPrize = true;
-          }
-
-          textOut += isIncludePrize ? localdata[0].slice(stringGetPrize.length + 2) : localdata[0];
-        }
-      });
-  
-      if (!isPrize) {
-       return;
-      }
-  
-      // Show an alert notification
-      chrome.notifications.create({
-        type: 'basic',
-        iconUrl: chrome.runtime.getURL('logo128.png'),
-        title: title,
-        message: textOut
-      });
-  
-      // Play the alert sound
-
-      if(!UserSettings.disableSound)
-      {
-        playAlertSound();
-      }
+      parseBotMessage(message)
     }
 
     sendResponse({ response: "Service worker received Nothing" });
@@ -162,6 +166,11 @@ chrome.runtime.onInstalled.addListener(() => {
       sendResponse({ response: "Service worker received the USERSETTINGS_UPDATE"});
       UpdateUserSettings();
       return;
+    }
+
+    if (message.type === 'BOT_CHAT_MESSAGE') {
+      sendResponse({ response: "Service worker received the BOT_CHAT_MESSAGE" });
+      parseBotMessage(message)
     }
 
     sendResponse({ response: "Service worker received Nothing" });
