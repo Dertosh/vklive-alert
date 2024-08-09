@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './Options.css';
 
 interface SettingsProps {
@@ -18,6 +18,8 @@ interface SettingsProps {
 
 const SettingsSection: React.FC<SettingsProps> = ({ settings, setSettings }) => {
   const { sectionName, fileUrl, disableSound, volume } = settings;
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   // Load settings from chrome.storage.local when the component mounts
   useEffect(() => {
@@ -50,12 +52,40 @@ const SettingsSection: React.FC<SettingsProps> = ({ settings, setSettings }) => 
       const fileReader = new FileReader();
       fileReader.onload = () => {
         if (fileReader.result) {
-          setSettings({ ...settings, fileUrl: fileReader.result as string });
+          const audioData = fileReader.result as string;
+          setSettings({ ...settings, fileUrl: audioData });
+
+          // Save the audio file data into chrome.storage.local
+          chrome.storage.local.set({ soundUrl: audioData }, () => {
+            console.log('Audio file has been saved to storage.');
+          });
         }
       };
-      fileReader.readAsDataURL(file);
+      fileReader.readAsDataURL(file); // Read file as base64
     }
   };
+
+  const handlePlayAudio = () => {
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+        setIsPlaying(false);
+      } else {
+        audioRef.current.volume = volume / 100; // Set volume
+        audioRef.current.play();
+        setIsPlaying(true);
+      }
+    }
+  };
+
+  // Reset play state when audio ends
+  useEffect(() => {
+    if (audioRef.current) {
+      const handleEnded = () => setIsPlaying(false);
+      audioRef.current.addEventListener('ended', handleEnded);
+      return () => audioRef.current?.removeEventListener('ended', handleEnded);
+    }
+  }, []);
 
   return (
     <div className="settings-section">
@@ -81,6 +111,21 @@ const SettingsSection: React.FC<SettingsProps> = ({ settings, setSettings }) => 
           disabled={disableSound}
         />
         <span>{volume}%</span>
+      </div>
+      <div className="form-group">
+        <label htmlFor="fileUpload">Upload Sound File:</label>
+        <input
+          type="file"
+          id="fileUpload"
+          accept="audio/*"
+          onChange={handleFileUpload}
+        />
+        {fileUrl && (
+          <button onClick={handlePlayAudio} style={{ marginLeft: '10px' }}>
+            {isPlaying ? 'Stop Audio' : 'Play Audio'}
+          </button>
+        )}
+        <audio ref={audioRef} src={fileUrl} />
       </div>
       <button onClick={handleSaveSettings}>Save Settings</button>
     </div>
