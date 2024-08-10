@@ -7,7 +7,7 @@ body, html {
 }
 
 .container {
-    padding: 20px;
+    padding: 30px;
     background-color: white;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
@@ -46,8 +46,14 @@ body, html {
 
 .settings-section,
 .test-message-section {
-    margin-bottom: 20px;
     width: 100%;
+    text-align: center;
+}
+
+.text-description {
+    width: auto;
+    font-size: medium;
+    text-align: center;
 }
 
 .form-group {
@@ -57,7 +63,7 @@ body, html {
 }
 
 label {
-    width: 150px;
+    width: 20%;
     margin-right: 10px;
     font-weight: bold;
     text-align: right;
@@ -90,7 +96,6 @@ button {
     transition: background-color 0.3s ease;
     font-size: 16px;
     display: inline-block;
-    margin-top: 10px;
 }
 
 button:hover {

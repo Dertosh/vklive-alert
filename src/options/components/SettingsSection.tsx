@@ -21,18 +21,6 @@ interface SettingsProps {
 const SettingsSection: React.FC<SettingsProps> = ({ settings, setSettings }) => {
   const { sectionName, fileUrl, disableSound, volume, soundFileValue } = settings;
 
-  console.log('soundFileValue name:', soundFileValue);
-
-  var fileUploadElement = document.getElementById('fileUpload') as HTMLInputElement;
-  
-  if(fileUploadElement && (!fileUploadElement.value || fileUploadElement.value.length == 0))
-  {
-    console.log("fileUpload", fileUploadElement.value)
-    fileUploadElement.value = soundFileValue;
-  }
-
-  console.log('disableSound name:', disableSound);
-
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
 
@@ -46,8 +34,6 @@ const SettingsSection: React.FC<SettingsProps> = ({ settings, setSettings }) => 
         volume: result.volume ? result.volume * 100 : 50, // Stored volume is a decimal, so we scale it
         soundFileValue: result.soundFileValue || ''
       });
-      console.log('local soundFileValue name:', soundFileValue);
-
     });
 
     // Reset play state when audio ends
@@ -82,15 +68,11 @@ const SettingsSection: React.FC<SettingsProps> = ({ settings, setSettings }) => 
     const file = e.target.files?.[0];
     if (file) {
       const fileName = e.target.value as string;
-      console.log('file name:', fileName);
-      console.log('soundFileValue name:', soundFileValue);
       const fileReader = new FileReader();
       fileReader.onload = () => {
         if (fileReader.result) {
           const audioData = fileReader.result as string;
-          console.log('file name:', fileName);
           setSettings({ ...settings, fileUrl: audioData, soundFileValue: fileName});
-          console.log('soundFileValue name:', soundFileValue);
         }
       };
       fileReader.readAsDataURL(file); // Read file as base64
@@ -98,8 +80,7 @@ const SettingsSection: React.FC<SettingsProps> = ({ settings, setSettings }) => 
   };
 
   const getFileName = () : string => {
-    console.log('getFileName soundFileValue name:', typeof soundFileValue, soundFileValue);
-    return typeof soundFileValue === "string" && soundFileValue.length > 0 ? soundFileValue : ""
+    return typeof soundFileValue === "string" && soundFileValue.length > 0 ? soundFileValue.split("fakepath\\")[1] : "No custom audio"
   }
 
   const handlePlayAudio = () => {
@@ -115,9 +96,12 @@ const SettingsSection: React.FC<SettingsProps> = ({ settings, setSettings }) => 
     }
   };
 
+  const handleResetAudio = () => {
+    setSettings({ ...settings, fileUrl: "", soundFileValue: ""});
+  };
+
   return (
     <div className="settings-section">
-      <h2>Sound Settings</h2>
       <div className="form-group">
         <label htmlFor="disableSound">Disable Sound:</label>
         <input
@@ -138,7 +122,22 @@ const SettingsSection: React.FC<SettingsProps> = ({ settings, setSettings }) => 
           onChange={(e) => setSettings({ ...settings, volume: Number(e.target.value) })}
           disabled={disableSound}
         />
-        <span>{volume}%</span>
+        <span className='text-description' style={{ marginLeft: '10px' }}>{volume}%</span>
+      </div>
+      <div className="form-group">
+        <label htmlFor="fileUpload">Uploaded Custom Sound:</label>
+        {fileUrl && (
+          <button onClick={handlePlayAudio} style={{ marginRight: '10px' }}>
+            {isPlaying ? 'Stop Audio' : 'Play Audio'}
+          </button>
+        )}
+        <div className='text-description'>{getFileName()}</div>
+        {fileUrl && (
+          <button onClick={handleResetAudio} style={{ marginLeft: '10px' }}>
+            Reset Audio
+          </button>
+        )}
+        <audio ref={audioRef} src={fileUrl} />
       </div>
       <div className="form-group">
         <label htmlFor="fileUpload">Upload Sound File:</label>
@@ -148,11 +147,6 @@ const SettingsSection: React.FC<SettingsProps> = ({ settings, setSettings }) => 
           accept="audio/*"
           onChange={handleFileUpload}
         />
-        {fileUrl && (
-          <button onClick={handlePlayAudio} style={{ marginLeft: '10px' }}>
-            {isPlaying ? 'Stop Audio' : 'Play Audio'}
-          </button>
-        )}
         <audio ref={audioRef} src={fileUrl} />
       </div>
       <button onClick={handleSaveSettings}>Save Settings</button>

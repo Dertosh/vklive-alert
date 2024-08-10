@@ -163,7 +163,6 @@ const TestMessageSection: React.FC<TestMessageProps> = ({ testMessage, setTestMe
 
   return (
     <div className="test-message-section">
-      <h2>Send Test Message</h2>
       <div className="form-group">
         <label htmlFor="channel">Channel:</label>
         <input
