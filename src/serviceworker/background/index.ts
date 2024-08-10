@@ -4,7 +4,7 @@ let soundUrl = "";
 const stringGetPrize = 'получает награду';
 let currentChannel = "";
 
-let UserSettings = {disableSound: false, volume: 0.5};
+let UserSettings = {disableSound: false, volume: 0.5, customSound: undefined};
 UpdateUserSettings();
 
 const audioPath = "audioworker/index.html";
@@ -20,9 +20,10 @@ async function sendMessageFromBackground(message: object) {
 
 async function UpdateUserSettings()
 {
-  chrome.storage.local.get(['disableSound', 'volume'], (result) => {
+  chrome.storage.local.get(['disableSound', 'volume', 'soundUrl'], (result) => {
     UserSettings.disableSound = result.disableSound || false;
     UserSettings.volume = result.volume || 0.5;
+    UserSettings.customSound = result.soundUrl || undefined;
   });
 }
 
@@ -122,7 +123,9 @@ async function createAudioWorker() {
         sendMessageFromBackground({
           type: 'USERSETTINGS_UPDATE', 
           volume: UserSettings.volume, 
-          disableSound: UserSettings.disableSound});
+          disableSound: UserSettings.disableSound,
+          customSound: UserSettings.customSound
+        });
       });
 
       await creating;

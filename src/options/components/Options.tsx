@@ -11,7 +11,8 @@ const Options = () => {
     sectionName: '',
     fileUrl: '',
     disableSound: false,
-    volume: 50
+    volume: 50,
+    soundFileValue: ''
   });
 
   const [testMessage, setTestMessage] = useState({
