@@ -1,5 +1,9 @@
+import { channel } from "diagnostics_channel";
+
 // The ID of the extension we want to talk to.
 let editorExtensionId = "";
+
+const channelName = window.location.href.split('.ru/')[1];
 
 // Function to send a message to the background script
 function sendMessageToBackground(message: object): void {
@@ -41,7 +45,8 @@ async function parseMessage(data: any){
         type: 'BOT_CHAT_MESSAGE',
         messageData: messageData,
         iconURL: messageData['author']['avatarUrl'],
-        isBot: botStatus
+        isBot: botStatus,
+        channel: channelName
       });
     }
   }

@@ -1,44 +1,89 @@
-/* Options.css */
-
 body, html {
     height: 100%;
     margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f5f5;
+    color: #333;
 }
 
 .container {
-    padding: 20px;
-    font-family: Arial, sans-serif;
+    padding: 30px;
     background-color: white;
-    font-size: medium;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh; /* Ensures the container takes at least the full height of the viewport */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    max-width: 800px;
+    margin: 40px auto;
     box-sizing: border-box;
+    overflow-y: auto;
+    max-height: 90vh;
 }
 
-.new-sound-section,
-.settings-section {
+.tabs {
+    display: flex;
+    justify-content: flex-start;
     margin-bottom: 20px;
-    width: 100%;
-    max-width: 600px; /* Ensures the sections don't get too wide */
 }
 
-.new-sound-section input[type="text"],
-.settings-section input[type="text"] {
-    display: block;
+.tabs button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 4px 4px 0 0;
+    transition: background-color 0.3s ease;
+    font-size: 16px;
+    margin-right: 5px;
+}
+
+.tabs button.active {
+    background-color: #0056b3;
+}
+
+.tabs button:hover {
+    background-color: #0056b3;
+}
+
+.settings-section,
+.test-message-section {
     width: 100%;
+    text-align: center;
+}
+
+.text-description {
+    width: auto;
+    font-size: medium;
+    text-align: center;
+}
+
+.form-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+label {
+    width: 20%;
+    margin-right: 10px;
+    font-weight: bold;
+    text-align: right;
+    font-size: 18px;
+}
+
+input[type="text"],
+input[type="range"],
+input[type="file"],
+input[type="number"] {
+    flex: 1;
     padding: 10px;
-    margin-bottom: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
+    font-size: 16px;
 }
 
-.new-sound-section input[type="file"] {
-    display: block;
-    margin-bottom: 10px;
+input[type="checkbox"] {
+    margin-left: 10px;
 }
 
 button {
@@ -49,18 +94,16 @@ button {
     cursor: pointer;
     border-radius: 4px;
     transition: background-color 0.3s ease;
+    font-size: 16px;
+    display: inline-block;
 }
 
 button:hover {
     background-color: #0056b3;
 }
 
-.settings-section label {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.settings-section label input[type="checkbox"] {
-    margin-right: 10px;
+h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
 }

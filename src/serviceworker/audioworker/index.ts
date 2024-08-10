@@ -3,7 +3,7 @@
 let soundUrls = new Map<string, string>(); 
 soundUrls.set('default', 'present.mp3');
 
-let UserSettings = {disableSound: false, volume: 0.5};
+let UserSettings = {disableSound: false, volume: 0.5, customSound: undefined};
 
 var audio = new Audio();
 
@@ -48,6 +48,10 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   if (message.type === 'USERSETTINGS_UPDATE') {
     sendResponse({ response: "Service audio worker received the USERSETTINGS_UPDATE"});
     UserSettings.volume = message.volume || 0.5;
+    if(message.customSound)
+    {
+      soundUrls.set('default', message.customSound);
+    }
     return true;
   }
 

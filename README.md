@@ -1,7 +1,9 @@
 # VK Play Live Alert
-It is a little extensions for see alerts of getting prize in chat
+It is a little extension for see alerts of getting prize in chat
 
 ## Install
+
+### From CRX file
 
 1. Launch the Chrome browser, click the Chrome menu icon, Chrome menu icon, consisting of three vertical dots, then select More tools, and then select Extensions.
 
@@ -10,6 +12,25 @@ It is a little extensions for see alerts of getting prize in chat
 3. Use drag-and-drop to drag the CRX file from the temporary location you used in step 1, and drop it into the Extensions window to install.
 
 4. To verify the install, relaunch the Chrome browser and, in the address bar, enter: chrome://extensions The Oracle Smart View for Office extension is listed in the Extensions page.
+
+### From zip
+
+1. Unpack zip arhive with extension to any folder
+
+2. Launch the Chrome browser, click the Chrome menu icon, Chrome menu icon, consisting of three vertical dots, then select More tools, and then select Extensions.
+
+3. Ensure that the Developer mode check box in the upper right corner is enabled.
+
+4. Push "Load unpacked" button and select folder with unpacked arhive with extension
+
+5. To verify the install, relaunch the Chrome browser and, in the address bar, enter: chrome://extensions The Oracle Smart View for Office extension is listed in the Extensions page.
+
+# Screenshots
+
+![](images/ifrit_example.png?raw=true "Example")
+![](images/options-settings.png?raw=true "Options Settings")
+![](images/options-testmessage.png?raw=true "Options TestMessage")
+
 
 # Getting Started with Create React App
 
