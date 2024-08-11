@@ -7,9 +7,7 @@ const channelName = window.location.href.split('.ru/')[1];
 
 // Function to send a message to the background script
 function sendMessageToBackground(message: object): void {
-  chrome.runtime.sendMessage(getExcursionId(), message, (response) => {
-    //console.log('Response from sniffer:', response);
-  });
+  chrome.runtime.sendMessage(getExcursionId(), message);
 }
 
 function getExcursionId(): string {
@@ -35,7 +33,6 @@ async function parseMessage(data: any){
     const data = obj['push']['pub']['data'];
 
     if (data['type'] === "message") {
-      //console.log("parseMessage:", data);
 
       const messageData = data['data'];
       const botStatus = messageData['author']['vkplayProfileLink'] === '' && messageData['author']['nick'] === "ChatBot";
