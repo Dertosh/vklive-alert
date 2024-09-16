@@ -3,11 +3,11 @@
 let soundUrl = "";
 const stringGetPrize = 'получает награду';
 let currentChannel = "";
+const audioPath = "audioworker/index.html";
 
 let UserSettings = {disableSound: false, volume: 0.5, customSound: undefined};
 UpdateUserSettings();
 
-const audioPath = "audioworker/index.html";
 let creating: Promise<void> | null; // A global promise to avoid concurrency issues
 
 // Function to send a message to the background script
