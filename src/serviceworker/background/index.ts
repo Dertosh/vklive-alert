@@ -25,6 +25,20 @@ async function UpdateUserSettings()
     UserSettings.volume = result.volume || 0.5;
     UserSettings.customSound = result.soundUrl || undefined;
   });
+
+  const offscreenUrl = chrome.runtime.getURL(audioPath);
+  const existingContexts = await chrome.runtime.getContexts({
+    contextTypes: [chrome.runtime.ContextType.OFFSCREEN_DOCUMENT],
+    documentUrls: [offscreenUrl]
+  });
+  if (existingContexts.length > 0) {
+    sendMessageFromBackground({
+      type: 'USERSETTINGS_UPDATE', 
+      volume: UserSettings.volume, 
+      disableSound: UserSettings.disableSound,
+      customSound: UserSettings.customSound
+    });
+  }
 }
 
 function getSound() {
