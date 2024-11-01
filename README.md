@@ -3,6 +3,10 @@ It is a little extension for see alerts of getting prize in chat
 
 ## Install
 
+### From Chrome Web Store
+
+[![Chrome Web Store](images/206x58-chrome-web-043497a3d766e.png?raw=true "Chrome Web Store")](https://chromewebstore.google.com/detail/vk-play-live-alert/cbebkikhnkeoaafacdomeapekephoheh)
+
 ### From CRX file
 
 1. Launch the Chrome browser, click the Chrome menu icon, Chrome menu icon, consisting of three vertical dots, then select More tools, and then select Extensions.

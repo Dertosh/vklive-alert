@@ -72,7 +72,7 @@ const botMessageTemplate = {
   },
   "id": 109195267,
   "threadId": null,
-  "styles": [],
+  "styles": [""],
   "createdAt": 1721748075,
   "data": [
       {
@@ -120,6 +120,7 @@ interface TestMessageProps {
     prizeName: string;
     cost: string;
     context: string;
+    markedMsg: string;
   };
   setTestMessage: React.Dispatch<React.SetStateAction<{
     channel: string;
@@ -127,11 +128,12 @@ interface TestMessageProps {
     prizeName: string;
     cost: string;
     context: string;
+    markedMsg: string;
   }>>;
 }
 
 const TestMessageSection: React.FC<TestMessageProps> = ({ testMessage, setTestMessage }) => {
-  const { channel, user, prizeName, cost, context } = testMessage;
+  const { channel, user, prizeName, cost, context, markedMsg } = testMessage;
 
   const sendTestMessage = () => {
     // Send the message to the background script
@@ -142,6 +144,8 @@ const TestMessageSection: React.FC<TestMessageProps> = ({ testMessage, setTestMe
     messageData.data[1].content = JSON.stringify([prizeTitle,"unstyled",[]]);
 
     messageData.data[3].content = JSON.stringify([context,"unstyled",[]]);
+
+    messageData.styles = (markedMsg == 'on') ? ["marked"] : []; 
 
     let message = {
       type: 'BOT_CHAT_MESSAGE',
@@ -158,11 +162,21 @@ const TestMessageSection: React.FC<TestMessageProps> = ({ testMessage, setTestMe
     console.log('Prize Name:', prizeName);
     console.log('Cost:', cost);
     console.log('Context:', context);
+    console.log('Marked message:', markedMsg ? "true" : "false");
     // Implement your message sending logic here
   };
 
   return (
     <div className="test-message-section">
+      <div className="form-group">
+        <label htmlFor="markedMsg">Marked message:</label>
+        <input
+          type="checkbox"
+          id="markedMsg"
+          value={markedMsg}
+          onChange={(e) => setTestMessage({ ...testMessage, markedMsg: e.target.value })}
+        />
+      </div>
       <div className="form-group">
         <label htmlFor="channel">Channel:</label>
         <input

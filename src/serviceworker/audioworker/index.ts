@@ -3,7 +3,7 @@
 let soundUrls = new Map<string, string>(); 
 soundUrls.set('default', 'present.mp3');
 
-let UserSettings = {disableSound: false, volume: 0.5, customSound: undefined};
+let UserSettings = {disableSound: false, volume: 0.5, disableSoundMarked: false, disableMarkedMsg: false, customSound: undefined};
 
 var audio = new Audio();
 
@@ -101,9 +101,9 @@ async function playAlertSound(soundName: string): Promise<void> {
   audio.pause();
   audio = new Audio(soundUrl);
   audio.volume = UserSettings.volume;
-  console.log("volume", UserSettings.volume);
+  //console.log("volume", UserSettings.volume);
   audio.play();
-  console.log("audio.play()");
+  //console.log("audio.play()");
 }
   
 // Adding export {} to make this file a module

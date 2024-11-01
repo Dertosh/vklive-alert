@@ -11,6 +11,8 @@ const Options = () => {
     sectionName: '',
     fileUrl: '',
     disableSound: false,
+    disableSoundMarked: false,
+    disableMarkedMsg: false,
     volume: 50,
     soundFileValue: ''
   });
@@ -20,7 +22,8 @@ const Options = () => {
     user: '',
     prizeName: '',
     cost: '',
-    context: ''
+    context: '',
+    markedMsg: ''
   });
 
   const handleTabClick = (tab: string) => {

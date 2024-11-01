@@ -2,10 +2,11 @@
 
 let soundUrl = "";
 const stringGetPrize = 'получает награду';
+const stringMarksMsg = 'выделил сообщение';
 let currentChannel = "";
 const audioPath = "audioworker/index.html";
 
-let UserSettings = {disableSound: false, volume: 0.5, customSound: undefined};
+let UserSettings = {disableSound: false, disableSoundMarked: false, disableMarkedMsg: false, volume: 0.5, customSound: undefined};
 UpdateUserSettings();
 
 let creating: Promise<void> | null; // A global promise to avoid concurrency issues
@@ -36,7 +37,8 @@ async function UpdateUserSettings()
       type: 'USERSETTINGS_UPDATE', 
       volume: UserSettings.volume, 
       disableSound: UserSettings.disableSound,
-      customSound: UserSettings.customSound
+      customSound: UserSettings.customSound,
+      disableSoundMarked: UserSettings.disableSoundMarked
     });
   }
 }
@@ -55,17 +57,19 @@ function getSound() {
   }
 
 async function parseBotMessage(message : any) {
-  if (!message.isBot) {
+  let isMarked: boolean = message.messageData["styles"].includes('marked');
+
+  if (!message.isBot && !isMarked) {
     return;
-   }
+  }
 
    let textOut: string = "";
-   let title: string = message.messageData['author']['displayName'];
+   let title: string = message.messageData['author']['displayName'] + ' ' + stringMarksMsg;
    let isPrize: boolean = false;
 
    message.messageData['data'].forEach((element: any) => {
      if (element.type === 'mention') {
-       title = element.displayName + ' ' + stringGetPrize;
+       title = element.displayName + ' ' + (isMarked ? stringMarksMsg : stringGetPrize);
        return;
      }
      if (element.type === 'text') {
@@ -90,7 +94,7 @@ async function parseBotMessage(message : any) {
      }
    });
 
-   if (!isPrize) {
+   if (!isPrize && (isMarked ? UserSettings.disableMarkedMsg : false)) {
     return;
    }
 
@@ -99,12 +103,14 @@ async function parseBotMessage(message : any) {
      type: 'basic',
      iconUrl: chrome.runtime.getURL('logo128.png'),
      title: title,
-     message: textOut
+     message: textOut,
+     silent: true,
+     buttons: []
    });
-
+   
    // Play the alert sound
 
-   if(!UserSettings.disableSound)
+   if(isMarked ? !UserSettings.disableMarkedMsg : !UserSettings.disableSound)
    {
      playAlertSound();
    }
@@ -138,7 +144,8 @@ async function createAudioWorker() {
           type: 'USERSETTINGS_UPDATE', 
           volume: UserSettings.volume, 
           disableSound: UserSettings.disableSound,
-          customSound: UserSettings.customSound
+          customSound: UserSettings.customSound,
+          disableSoundMarked: UserSettings.disableSoundMarked
         });
       });
 
