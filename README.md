@@ -5,7 +5,7 @@ It is a little extension for see alerts of getting prize in chat
 
 ### From Chrome Web Store
 
-[![Chrome Web Store](images/206x58-chrome-web-043497a3d766e.png?raw=true Chrome Web Store')](https://chromewebstore.google.com/detail/vk-play-live-alert/cbebkikhnkeoaafacdomeapekephoheh)
+[![Chrome Web Store](images/206x58-chrome-web-043497a3d766e.png?raw=true "Chrome Web Store")](https://chromewebstore.google.com/detail/vk-play-live-alert/cbebkikhnkeoaafacdomeapekephoheh)
 
 ### From CRX file
 
