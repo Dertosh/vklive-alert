@@ -2,6 +2,7 @@
 
 let soundUrl = "";
 const stringGetPrize = 'получает награду';
+const stringMarksMsg = 'выделил сообщение';
 let currentChannel = "";
 
 let UserSettings = {disableSound: false, volume: 0.5, customSound: undefined};
@@ -55,7 +56,9 @@ function getSound() {
   }
 
 async function parseBotMessage(message : any) {
-  if (!message.isBot) {
+  let isMarked = message.messageData["styles"].includes('marked');
+
+  if (!message.isBot || !isMarked) {
     return;
    }
 
@@ -65,7 +68,7 @@ async function parseBotMessage(message : any) {
 
    message.messageData['data'].forEach((element: any) => {
      if (element.type === 'mention') {
-       title = element.displayName + ' ' + stringGetPrize;
+       title = element.displayName + ' ' + (isMarked ? stringMarksMsg : stringGetPrize);
        return;
      }
      if (element.type === 'text') {
@@ -90,7 +93,7 @@ async function parseBotMessage(message : any) {
      }
    });
 
-   if (!isPrize) {
+   if (!isPrize && !isMarked) {
     return;
    }
 
@@ -99,7 +102,9 @@ async function parseBotMessage(message : any) {
      type: 'basic',
      iconUrl: chrome.runtime.getURL('logo128.png'),
      title: title,
-     message: textOut
+     message: textOut,
+     silent: true,
+     NotificationButton: []
    });
 
    // Play the alert sound

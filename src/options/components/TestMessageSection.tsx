@@ -72,7 +72,7 @@ const botMessageTemplate = {
   },
   "id": 109195267,
   "threadId": null,
-  "styles": [],
+  "styles": [""],
   "createdAt": 1721748075,
   "data": [
       {
@@ -142,6 +142,8 @@ const TestMessageSection: React.FC<TestMessageProps> = ({ testMessage, setTestMe
     messageData.data[1].content = JSON.stringify([prizeTitle,"unstyled",[]]);
 
     messageData.data[3].content = JSON.stringify([context,"unstyled",[]]);
+
+    messageData.styles = ["marked"]; 
 
     let message = {
       type: 'BOT_CHAT_MESSAGE',
