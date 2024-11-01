@@ -6,6 +6,8 @@ interface SettingsProps {
     sectionName: string;
     fileUrl: string;
     disableSound: boolean;
+    disableSoundMarked: boolean;
+    disableMarkedMsg: boolean;
     volume: number;
     soundFileValue: string;
   };
@@ -13,24 +15,28 @@ interface SettingsProps {
     sectionName: string;
     fileUrl: string;
     disableSound: boolean;
+    disableSoundMarked: boolean;
+    disableMarkedMsg: boolean;
     volume: number;
     soundFileValue: string;
   }>>;
 }
 
 const SettingsSection: React.FC<SettingsProps> = ({ settings, setSettings }) => {
-  const { sectionName, fileUrl, disableSound, volume, soundFileValue } = settings;
+  const { sectionName, fileUrl, disableSound, disableSoundMarked, disableMarkedMsg, volume, soundFileValue } = settings;
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
 
   // Load settings from chrome.storage.local when the component mounts
   useEffect(() => {
-    chrome.storage.local.get(['sectionName', 'soundUrl', 'disableSound', 'volume', 'soundFileValue'], (result) => {
+    chrome.storage.local.get(['sectionName', 'soundUrl', 'disableSound', 'disableSoundMarked', 'disableMarkedMsg', 'volume', 'soundFileValue'], (result) => {
       setSettings({
         sectionName: result.sectionName || '',
         fileUrl: result.soundUrl || '',
         disableSound: result.disableSound || false,
+        disableSoundMarked: result.disableSoundMarked || false,
+        disableMarkedMsg: result.disableMarkedMsg || false,
         volume: result.volume ? result.volume * 100 : 50, // Stored volume is a decimal, so we scale it
         soundFileValue: result.soundFileValue || ''
       });
@@ -50,6 +56,8 @@ const SettingsSection: React.FC<SettingsProps> = ({ settings, setSettings }) => 
       soundUrl: fileUrl,
       sectionName: sectionName,
       disableSound: disableSound,
+      disableSoundMarked: disableSoundMarked,
+      disableMarkedMsg: disableMarkedMsg,
       volume: volume / 100,
       soundFileValue: soundFileValue
     }, () => {
@@ -58,6 +66,8 @@ const SettingsSection: React.FC<SettingsProps> = ({ settings, setSettings }) => 
         type: 'USERSETTINGS_UPDATE', 
         volume: volume / 100, 
         disableSound: disableSound,
+        disableSoundMarked: disableSoundMarked,
+        disableMarkedMsg: disableMarkedMsg,
         customSound: fileUrl
       };
       chrome.runtime.sendMessage(message);
@@ -102,6 +112,24 @@ const SettingsSection: React.FC<SettingsProps> = ({ settings, setSettings }) => 
 
   return (
     <div className="settings-section">
+      <div className="form-group">
+        <label htmlFor="disableMarkedMsg">Disable show Marked Message:</label>
+        <input
+          type="checkbox"
+          id="disableMarkedMsg"
+          checked={disableSoundMarked}
+          onChange={(e) => setSettings({ ...settings, disableMarkedMsg: e.target.checked })}
+        />
+      </div>
+      <div className="form-group">
+        <label htmlFor="disableSoundMarked">Disable Sound for Marked Message:</label>
+        <input
+          type="checkbox"
+          id="disableSoundMarked"
+          checked={disableSoundMarked}
+          onChange={(e) => setSettings({ ...settings, disableSoundMarked: e.target.checked })}
+        />
+      </div>
       <div className="form-group">
         <label htmlFor="disableSound">Disable Sound:</label>
         <input
