@@ -64,7 +64,7 @@ async function parseBotMessage(message : any) {
   }
 
    let textOut: string = "";
-   let title: string = message.messageData['author']['displayName'];
+   let title: string = message.messageData['author']['displayName'] + ' ' + stringMarksMsg;
    let isPrize: boolean = false;
 
    message.messageData['data'].forEach((element: any) => {
