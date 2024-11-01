@@ -14,9 +14,7 @@
   },
   "options_page": "options/index.html",
   "permissions": [
-    "webRequest", 
     "storage",     
-    "scripting",
     "notifications",
     "offscreen"
   ],
