@@ -113,9 +113,6 @@ async function parseBotMessage(message : any) {
    
    // Play the alert sound
 
-   console.log("isMarked", isMarked)
-   console.log("UserSettings.disableSoundMarked", UserSettings.disableSoundMarked)
-
    if(isMarked ? !UserSettings.disableSoundMarked : !UserSettings.disableSound)
    {
      playAlertSound();
