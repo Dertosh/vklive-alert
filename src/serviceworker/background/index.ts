@@ -21,10 +21,12 @@ async function sendMessageFromBackground(message: object) {
 
 async function UpdateUserSettings()
 {
-  chrome.storage.local.get(['disableSound', 'volume', 'soundUrl'], (result) => {
+  chrome.storage.local.get(['disableSound', 'volume', 'soundUrl', 'disableMarkedMsg', 'disableSoundMarked'], (result) => {
     UserSettings.disableSound = result.disableSound || false;
     UserSettings.volume = result.volume || 0.5;
     UserSettings.customSound = result.soundUrl || undefined;
+    UserSettings.disableMarkedMsg = result.disableMarkedMsg || false;
+    UserSettings.disableSoundMarked = result.disableSoundMarked || false;
   });
 
   const offscreenUrl = chrome.runtime.getURL(audioPath);
@@ -57,9 +59,10 @@ function getSound() {
   }
 
 async function parseBotMessage(message : any) {
+
   let isMarked: boolean = message.messageData["styles"].includes('marked');
 
-  if (!message.isBot && !isMarked) {
+  if (!message.isBot && !isMarked || (message.isBot && isMarked)) {
     return;
   }
 
@@ -94,7 +97,7 @@ async function parseBotMessage(message : any) {
      }
    });
 
-   if (!isPrize && (isMarked ? UserSettings.disableMarkedMsg : false)) {
+   if ((!isPrize && message.isBot) || ((isMarked ? UserSettings.disableMarkedMsg : false) && !message.isBot)) {
     return;
    }
 
@@ -110,7 +113,10 @@ async function parseBotMessage(message : any) {
    
    // Play the alert sound
 
-   if(isMarked ? !UserSettings.disableMarkedMsg : !UserSettings.disableSound)
+   console.log("isMarked", isMarked)
+   console.log("UserSettings.disableSoundMarked", UserSettings.disableSoundMarked)
+
+   if(isMarked ? !UserSettings.disableSoundMarked : !UserSettings.disableSound)
    {
      playAlertSound();
    }
