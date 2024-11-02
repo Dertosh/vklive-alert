@@ -51,12 +51,11 @@ const SettingsSection: React.FC<SettingsProps> = ({ settings, setSettings }) => 
   }, [setSettings]);
 
   const handleSaveSettings = () => {
-    console.log('soundFileValue name:', soundFileValue);
     chrome.storage.local.set({
       soundUrl: fileUrl,
       sectionName: sectionName,
       disableSound: disableSound,
-      disableSoundMarked: disableSoundMarked,
+      disableSoundMarked: disableSound ? true : disableSoundMarked,
       disableMarkedMsg: disableMarkedMsg,
       volume: volume / 100,
       soundFileValue: soundFileValue
@@ -66,7 +65,7 @@ const SettingsSection: React.FC<SettingsProps> = ({ settings, setSettings }) => 
         type: 'USERSETTINGS_UPDATE', 
         volume: volume / 100, 
         disableSound: disableSound,
-        disableSoundMarked: disableSoundMarked,
+        disableSoundMarked: disableSound ? true : disableSoundMarked,
         disableMarkedMsg: disableMarkedMsg,
         customSound: fileUrl
       };
@@ -117,7 +116,7 @@ const SettingsSection: React.FC<SettingsProps> = ({ settings, setSettings }) => 
         <input
           type="checkbox"
           id="disableMarkedMsg"
-          checked={disableSoundMarked}
+          checked={disableMarkedMsg}
           onChange={(e) => setSettings({ ...settings, disableMarkedMsg: e.target.checked })}
         />
       </div>
@@ -128,6 +127,7 @@ const SettingsSection: React.FC<SettingsProps> = ({ settings, setSettings }) => 
           id="disableSoundMarked"
           checked={disableSoundMarked}
           onChange={(e) => setSettings({ ...settings, disableSoundMarked: e.target.checked })}
+          disabled={disableSound}
         />
       </div>
       <div className="form-group">

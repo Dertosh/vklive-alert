@@ -23,7 +23,7 @@ const Options = () => {
     prizeName: '',
     cost: '',
     context: '',
-    markedMsg: ''
+    markedMsg: false
   });
 
   const handleTabClick = (tab: string) => {

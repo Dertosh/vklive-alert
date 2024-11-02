@@ -120,7 +120,7 @@ interface TestMessageProps {
     prizeName: string;
     cost: string;
     context: string;
-    markedMsg: string;
+    markedMsg: boolean;
   };
   setTestMessage: React.Dispatch<React.SetStateAction<{
     channel: string;
@@ -128,7 +128,7 @@ interface TestMessageProps {
     prizeName: string;
     cost: string;
     context: string;
-    markedMsg: string;
+    markedMsg: boolean;
   }>>;
 }
 
@@ -141,17 +141,17 @@ const TestMessageSection: React.FC<TestMessageProps> = ({ testMessage, setTestMe
 
     messageData.data[0].displayName = user;
     let prizeTitle = "получает награду: " + prizeName + " (1 раз) за " + cost;
-    messageData.data[1].content = JSON.stringify([prizeTitle,"unstyled",[]]);
+    messageData.data[1].content = markedMsg ? "" : JSON.stringify([prizeTitle,"unstyled",[]]);
 
     messageData.data[3].content = JSON.stringify([context,"unstyled",[]]);
 
-    messageData.styles = (markedMsg == 'on') ? ["marked"] : []; 
+    messageData.styles = markedMsg ? ["marked"] : []; 
 
     let message = {
       type: 'BOT_CHAT_MESSAGE',
       messageData: messageData,
       iconURL: "",
-      isBot: true,
+      isBot: !markedMsg,
       channel: channel
     };
     chrome.runtime.sendMessage(message);
@@ -162,8 +162,7 @@ const TestMessageSection: React.FC<TestMessageProps> = ({ testMessage, setTestMe
     console.log('Prize Name:', prizeName);
     console.log('Cost:', cost);
     console.log('Context:', context);
-    console.log('Marked message:', markedMsg ? "true" : "false");
-    // Implement your message sending logic here
+    console.log('Marked message:', markedMsg);
   };
 
   return (
@@ -173,8 +172,9 @@ const TestMessageSection: React.FC<TestMessageProps> = ({ testMessage, setTestMe
         <input
           type="checkbox"
           id="markedMsg"
-          value={markedMsg}
-          onChange={(e) => setTestMessage({ ...testMessage, markedMsg: e.target.value })}
+          //value={markedMsg}
+          checked={markedMsg}
+          onChange={(e) => setTestMessage({ ...testMessage, markedMsg: e.target.checked })}
         />
       </div>
       <div className="form-group">
